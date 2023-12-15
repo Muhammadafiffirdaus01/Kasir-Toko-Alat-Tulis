@@ -1,0 +1,580 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
+package Toko;
+
+import java.awt.HeadlessException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+/**
+ *
+ * @author ASUS
+ */
+public class DataMember extends javax.swing.JFrame {
+    
+    private final DefaultTableModel model;
+    
+    private void autonumber(){
+        try {
+            Connection c = koneksi_login.getKoneksi();
+            try (Statement s = c.createStatement()) {
+                String sql = "SELECT * FROM member ORDER BY ID_Member DESC";
+                try (ResultSet r = s.executeQuery(sql)) {
+                    if (r.next()) {
+                        String NoFaktur = r.getString("ID_Member").substring(2);
+                        String MB = "" +(Integer.parseInt(NoFaktur)+1);
+                        String Nol = "";
+                        
+                        switch (MB.length()) {
+                            case 1:
+                                Nol = "00";
+                                break;
+                            case 2:
+                                Nol = "0";
+                                break;
+                            case 3:
+                                Nol = "";
+                                break;
+                            default:
+                                break;
+                        }
+                        
+                        txIDMember.setText("MB" + Nol + MB);
+                    }else{
+                        txIDMember.setText("MB001");
+                    }
+                }
+            }
+        } catch (NumberFormatException | SQLException e) {
+            System.out.println("autonumber error");
+        }
+    }
+    
+    public void clear(){
+        txNamaMember.setText("");
+        txNoTelpon.setText("");
+        txTanggalAktif.setText("");
+    }
+    
+    public final void loadData(){
+        model.getDataVector().removeAllElements();
+        
+        model.fireTableDataChanged();
+        
+        try {
+            Connection c = koneksi_login.getKoneksi();
+            try (Statement s = c.createStatement()) {
+                String sql = "SELECT * FROM member";
+                try (ResultSet r = s.executeQuery(sql)) {
+                    while (r.next()) {
+                        Object[] o = new Object[4];
+                        o [0] = r.getString("ID_Member");
+                        o [1] = r.getString("Nama_Member");
+                        o [2] = r.getString("No_Telepon");
+                        o [3] = r.getString("Tanggal_Aktif");                       
+                        model.addRow(o);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("terjadi kesalahan");
+        }
+    }
+    
+    public void cariData(){
+        DefaultTableModel tabel = new DefaultTableModel();
+        
+        tabel.addColumn("ID Member");
+        tabel.addColumn("Nama Member");
+        tabel.addColumn("No Telepon");
+        tabel.addColumn("Tanggal Aktif");
+        
+        try {
+            Connection c = koneksi_login.getKoneksi();
+            String sql = "Select * from member where ID_Member like '%" + jTextField1.getText() + "%'" +
+                    "or Nama_Member like '%" + jTextField1.getText() + "%'";
+            Statement stat = c.createStatement();
+            ResultSet rs = stat.executeQuery(sql);
+            while (rs.next()) {                
+                tabel.addRow(new Object[]{
+                    rs.getString(1),
+                    rs.getString(2),
+                    rs.getString(3),
+                    rs.getString(4),
+                });
+            }
+            jTable1.setModel(tabel);
+            loadData();
+        } catch (SQLException e) {
+            System.out.println("Cari Data Error");
+        }finally{
+        }
+    }
+    
+    
+    /**
+     * Creates new form DataMember
+     */
+    public DataMember() {
+        initComponents();
+        this.setLocationRelativeTo(null);
+        
+        model = new DefaultTableModel();
+        
+        jTable1.setModel(model);
+        
+        model.addColumn("ID_Member");
+        model.addColumn("Nama_Member");
+        model.addColumn("No_Telepon");
+        model.addColumn("Tanggal_Aktif");
+        
+        loadData();
+        autonumber();
+        btnUpdate.setEnabled(false);
+        btnHapus.setEnabled(false);
+        btnBatal.setEnabled(false);
+    }
+    
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        txIDMember = new javax.swing.JTextField();
+        txNamaMember = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        txNoTelpon = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txTanggalAktif = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        btnSimpan = new javax.swing.JButton();
+        btnUpdate = new javax.swing.JButton();
+        btnHapus = new javax.swing.JButton();
+        btnBatal = new javax.swing.JButton();
+        btnKembali = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jPanel1.setBackground(new java.awt.Color(102, 51, 0));
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("Data Member");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(287, 287, 287)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
+
+        jPanel2.setBackground(new java.awt.Color(204, 102, 0));
+
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField1KeyTyped(evt);
+            }
+        });
+
+        jLabel2.setText("Cari Data");
+
+        jLabel3.setText("ID Member");
+
+        jLabel4.setText("Nama Member");
+
+        jLabel5.setText("No Telepon");
+
+        jLabel6.setText("Tanggal Aktif ");
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTable1);
+
+        btnSimpan.setText("Simpan");
+        btnSimpan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSimpanActionPerformed(evt);
+            }
+        });
+
+        btnUpdate.setText("Update");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
+
+        btnHapus.setText("Hapus");
+        btnHapus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHapusActionPerformed(evt);
+            }
+        });
+
+        btnBatal.setText("Batal");
+        btnBatal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBatalActionPerformed(evt);
+            }
+        });
+
+        btnKembali.setText("Kembali");
+        btnKembali.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnKembaliActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(48, 48, 48)
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel3))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txIDMember, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
+                                    .addComponent(txNamaMember))
+                                .addGap(109, 109, 109)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jLabel6)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txTanggalAktif))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jLabel5)
+                                        .addGap(30, 30, 30)
+                                        .addComponent(txNoTelpon, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 672, Short.MAX_VALUE)))
+                .addContainerGap())
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(btnSimpan)
+                .addGap(18, 18, 18)
+                .addComponent(btnUpdate)
+                .addGap(18, 18, 18)
+                .addComponent(btnHapus)
+                .addGap(18, 18, 18)
+                .addComponent(btnBatal)
+                .addGap(18, 18, 18)
+                .addComponent(btnKembali)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addGap(25, 25, 25)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(txIDMember, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(txNoTelpon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(txNamaMember, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(txTanggalAktif, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSimpan)
+                    .addComponent(btnUpdate)
+                    .addComponent(btnHapus)
+                    .addComponent(btnBatal)
+                    .addComponent(btnKembali))
+                .addGap(24, 24, 24))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+        cariData();
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void btnBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBatalActionPerformed
+        // TODO add your handling code here:
+        clear();
+        loadData();
+        btnSimpan.setEnabled(true);
+        btnUpdate.setEnabled(false);
+        btnHapus.setEnabled(false);
+        btnBatal.setEnabled(false);
+        autonumber();
+    }//GEN-LAST:event_btnBatalActionPerformed
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        // TODO add your handling code here:
+        int i = jTable1.getSelectedRow();
+        if (i == -1) {
+            return;
+        }
+        String id = (String) model.getValueAt(i, 0);
+        String nama = txNamaMember.getText();
+        String noTelpon = (String)txNoTelpon.getText();
+        String tanggalAktif = txTanggalAktif.getText();
+        
+        try {
+            Connection c = koneksi_login.getKoneksi();
+            String sql = "UPDATE barang SET Nama_Member = ?, No_Telepon = ?, Tanggal_Aktif = ? WHERE ID_Member = ?";
+            try (PreparedStatement p = c.prepareStatement(sql)) {
+                p.setString(1, nama);
+                p.setString(2, noTelpon);
+                p.setString(3, tanggalAktif);
+                p.setString(4, id);
+                
+                p.executeUpdate();
+            }
+            JOptionPane.showMessageDialog(null, "Data Terubah");
+            btnSimpan.setEnabled(true);
+            btnUpdate.setEnabled(false);
+            btnHapus.setEnabled(false);
+            btnBatal.setEnabled(false);
+            clear();
+        } catch (HeadlessException | SQLException e) {
+            System.out.println("update error");
+        }finally{
+            loadData();
+            autonumber();
+        }                            
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
+        // TODO add your handling code here:
+        int i = jTable1.getSelectedRow();
+        if (i == -1) {
+            return;
+        }
+        
+        String id = (String) model.getValueAt(i, 0);
+        
+        int pernyataan = JOptionPane.showConfirmDialog(null, "Yakin Data Akan Dihapus","Konfirmasi", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (pernyataan== JOptionPane.OK_OPTION) {
+            try {
+                Connection c = koneksi_login.getKoneksi();
+                String sql = "DELETE FROM member WHERE ID_Member = ?";
+                try (PreparedStatement p = c.prepareStatement(sql)) {
+                    p.setString(1, id);
+                    p.executeUpdate();
+                }
+                JOptionPane.showMessageDialog(null, "Data Terhapus");
+            } catch (HeadlessException | SQLException e) {
+                System.out.println("Terjadi Kesalahan");
+            }finally{
+                btnSimpan.setEnabled(true);
+                btnUpdate.setEnabled(false);
+                btnHapus.setEnabled(false);
+                btnBatal.setEnabled(false);
+                loadData();
+                autonumber();
+                clear();
+            }
+        }
+        if (pernyataan== JOptionPane.CANCEL_OPTION) {
+            
+        }
+    }//GEN-LAST:event_btnHapusActionPerformed
+
+    private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
+        // TODO add your handling code here:
+        String id = txIDMember.getText();
+        String nama = txNamaMember.getText();
+        String noTelpon = txNoTelpon.getText();
+        String tanggalAktif = txTanggalAktif.getText();
+        
+        try {
+            Connection c = koneksi_login.getKoneksi();
+            String sql = "INSERT INTO MEMBER VALUES (?, ?, ?, ?)";
+            try (PreparedStatement p = c.prepareStatement(sql)) {
+                p.setString(1, id);
+                p.setString(2, nama);
+                p.setString(3, noTelpon);
+                p.setString(4, tanggalAktif);
+    
+                p.executeUpdate();
+            }
+            JOptionPane.showMessageDialog(null, "Data Tersimpan");
+            loadData();
+        } catch (HeadlessException | SQLException e) {
+            System.out.println("Terjadi Kesalahan");
+        }finally{
+            autonumber();
+            clear();
+        }
+    }//GEN-LAST:event_btnSimpanActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        // TODO add your handling code here:
+        btnSimpan.setEnabled(false);
+        btnUpdate.setEnabled(true);
+        btnHapus.setEnabled(true);
+        btnBatal.setEnabled(true);
+        
+        int i = jTable1.getSelectedRow();
+        if (i == -1) {
+            return;
+        }
+        
+        String id = (String) model.getValueAt(i, 0);
+        String nama = (String) model.getValueAt(i, 1);
+        String noTelpon = (String) model.getValueAt(i, 2);
+        String tanggalAktif = (String) model.getValueAt(i, 3);
+        
+        txIDMember.setText(id);
+        txNamaMember.setText(nama);
+        txNoTelpon.setText(noTelpon);
+        txTanggalAktif.setText(tanggalAktif);
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyTyped
+        // TODO add your handling code here:
+        cariData();
+    }//GEN-LAST:event_jTextField1KeyTyped
+
+    private void btnKembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKembaliActionPerformed
+        // TODO add your handling code here:
+        new MenuAwal().setVisible(true);
+        dispose();
+    }//GEN-LAST:event_btnKembaliActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(DataMember.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(DataMember.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(DataMember.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(DataMember.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(() -> {
+            new DataMember().setVisible(true);
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBatal;
+    private javax.swing.JButton btnHapus;
+    private javax.swing.JButton btnKembali;
+    private javax.swing.JButton btnSimpan;
+    private javax.swing.JButton btnUpdate;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField txIDMember;
+    private javax.swing.JTextField txNamaMember;
+    private javax.swing.JTextField txNoTelpon;
+    private javax.swing.JTextField txTanggalAktif;
+    // End of variables declaration//GEN-END:variables
+}
